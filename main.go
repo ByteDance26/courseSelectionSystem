@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+
 	DB.NewRedisHelper()
 	rs := DB.GetRedisHelper()
 	res, err := rs.Client.Ping().Result()
