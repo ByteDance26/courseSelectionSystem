@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
+func mainTest() {
 	DB.MysqlInit()
 
 	r := gin.Default()
