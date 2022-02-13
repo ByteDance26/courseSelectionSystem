@@ -25,6 +25,7 @@ const (
 	StudentHasNoCourse ErrNo = 13 // 学生没有课程
 	StudentHasCourse   ErrNo = 14 // 学生有课程
 
+	SessionError ErrNo = 15
 	UnknownError ErrNo = 255 // 未知错误
 )
 
@@ -132,8 +133,8 @@ type DeleteMemberResponse struct {
 // 登录
 
 type LoginRequest struct {
-	Username string
-	Password string
+	Username string `binding:"required"`
+	Password string `binding:"required"`
 }
 
 // 登录成功后需要 Set-Cookie("camp-session", ${value})
