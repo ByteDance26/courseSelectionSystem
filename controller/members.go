@@ -106,5 +106,4 @@ func ListMember(c *gin.Context) {
 	if err := c.ShouldBind(&Request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Connection error"})
 	}
-
 }
