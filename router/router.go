@@ -9,6 +9,7 @@ func RegisterRouter(r *gin.Engine) {
 	g := r.Group("/api/v1")
 
 	// 成员管理
+	g.Use()
 	g.POST("/member/create")
 	g.GET("/member")
 	g.GET("/member/list")
@@ -17,9 +18,9 @@ func RegisterRouter(r *gin.Engine) {
 
 	// 登录
 
-	g.POST("/auth/login")
-	g.POST("/auth/logout")
-	g.GET("/auth/whoami")
+	g.POST("/auth/login", controller.LoginHandle)
+	g.POST("/auth/logout", controller.LogoutHandle)
+	g.GET("/auth/whoami", controller.WhoamiHandle)
 
 	// 排课
 	g.POST("/course/create", controller.CreateCourse)
