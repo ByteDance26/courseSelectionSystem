@@ -133,12 +133,12 @@ func BindCourse(c *gin.Context) {
 	default:
 		break
 	}
-	c.JSON(http.StatusBadRequest, BindCourseResponse)
+	c.JSON(http.StatusBadRequest, BindCourseResponse) //TODO::对OK，http返回码不对
 	return
 }
 
 func UnbindCourse(c *gin.Context) {
-	var UnbindCourseRequest _type.UnbindCourseRequest
+	var UnbindCourseRequest _type.UnbindCourseRequest //TODO::改类型需要强制 binding:"required" 才能判断参数错误
 	var UnbindCourseResponse _type.UnbindCourseResponse
 
 	if err := c.ShouldBindJSON(&UnbindCourseRequest); err != nil {
@@ -150,7 +150,7 @@ func UnbindCourse(c *gin.Context) {
 		return
 	}
 
-	var bd modules.BindCourse
+	var bd modules.BindCourse //TODO::前面已经判断过参数正误，是否重复
 	var err2 error
 	if bd.CourseId, err2 = strconv.ParseInt(UnbindCourseRequest.CourseID, 10, 64); err2 != nil {
 		//参数错误
