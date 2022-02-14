@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"courseSelectionSystem/modules"
+	modules "courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
 	"github.com/gin-gonic/gin"
 	"net/http"
