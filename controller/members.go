@@ -12,7 +12,7 @@ import (
 )
 
 // CreateMember 创建新用户
-// TODO 检查当前登录用户是否是管理员还没做
+// TODO 检查当前登录用户是否是管理员 LoginRequired
 func CreateMember(c *gin.Context) {
 	var Response _type.CreateMemberResponse
 	var Request _type.CreateMemberRequest
@@ -51,14 +51,15 @@ func CreateMember(c *gin.Context) {
 			Response.Code = _type.UserHasExisted
 			Response.Data.UserID = ""
 		} else {
-			fmt.Println(Error)
+			// TODO 未知错误 还没有遇到这种情况
+			//fmt.Println(Error)
+			Response.Code = _type.UnknownError
 		}
 	}
 	c.JSON(http.StatusOK, Response)
 }
 
 // GetMember 获取当前登录用户信息
-// TODO 用户未登录 还没做
 func GetMember(c *gin.Context) {
 	var Response _type.GetMemberResponse
 	var Request _type.GetMemberRequest
@@ -100,10 +101,38 @@ func GetMember(c *gin.Context) {
 }
 
 func ListMember(c *gin.Context) {
-	//var Response _type.GetMemberListResponse
+	var Response _type.GetMemberListResponse
 	var Request _type.GetMemberListRequest
 	// 获取JSON参数
 	if err := c.ShouldBind(&Request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Connection error"})
 	}
+	// 获取Request中需要的参数Offset和Limit
+	Offset := Request.Offset
+	Limit := Request.Limit
+	// 全局变量DB赋值
+	db := DB.MysqlDB
+	// 查找数据库
+	var ListedMembers []_type.Member
+	result := db.Limit(Limit).Offset(Offset).Find(&ListedMembers, "status = ?", _type.Existed)
+	// SELECT * FROM members OFFSET 5 LIMIT 10 WHERE status = 1;
+	// 处理结果
+	Rows := result.RowsAffected // 返回找到的记录数
+	if err := result.Error; err != nil {
+		Response.Code = _type.UnknownError
+		c.JSON(http.StatusOK, Response)
+		return
+	}
+	fmt.Println(Rows, len(ListedMembers))
+	//
+	ResponseMemberList := make([]_type.TMember, Rows)
+	for i := 0; i < int(Rows); i++ {
+		ResponseMemberList[i].UserID = strconv.Itoa(int(ListedMembers[i].UserID))
+		ResponseMemberList[i].Nickname = ListedMembers[i].Nickname
+		ResponseMemberList[i].Username = ListedMembers[i].Username
+		ResponseMemberList[i].UserType = ListedMembers[i].UserType
+	}
+	Response.Code = _type.OK
+	Response.Data.MemberList = ResponseMemberList
+	c.JSON(http.StatusOK, Response)
 }
