@@ -28,6 +28,14 @@ type Teacher struct {
 	UserType  _type.UserType
 }
 
+type Member struct {
+	Username string
+	Nickname string
+	Password string
+	UserType int
+	UserId   int `gorm:"primary_key"`
+}
+
 //course
 
 func (Course) TableName() string {
@@ -214,4 +222,19 @@ func GetCoursesByTeacherId(id int64) (courses []*_type.TCourse, err error) {
 		return courses, err
 	}
 	return courses, err
+}
+
+//member
+func (Member) TableName() string {
+	return "member"
+}
+
+func (mem *Member) GetMemberByUsername(username string) error {
+	err := DB.MysqlDB.Table("member").Where("username = ?", username).First(mem).Error
+	return err
+}
+
+func (mem *Member) GetMemberByUserId(userId int) error {
+	err := DB.MysqlDB.Table("member").Where("user_id = ?", userId).First(mem).Error
+	return err
 }
