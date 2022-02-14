@@ -1,7 +1,9 @@
 package modules
 
 import (
+	"awesomeProject1/DB"
 	_type "awesomeProject1/type"
+	"regexp"
 	"unicode"
 )
 
@@ -51,11 +53,31 @@ func isPasswordValid(pwd string) bool {
 	if len(pwd) < 8 || len(pwd) > 20 {
 		return false
 	}
-	// 包括大小写、数字
-	for _, r := range pwd {
-		if !unicode.IsLetter(r) && !unicode.IsDigit(r) {
-			return false
+	// 是否同时包括大小写、数字
+	level := 0
+	var match bool
+	patternList := []string{`[0-9]+`, `[a-z]+`, `[A-Z]+`}
+	for _, pattern := range patternList {
+		match, _ = regexp.MatchString(pattern, pwd)
+		if match {
+			level++
 		}
 	}
-	return true
+	return level == len(patternList)
+}
+
+// 判断修改or删除的用户是否存在或者已经删除
+func IsMemberOK(UserID int) _type.ErrNo {
+	// 全局变量DB赋值
+	db := DB.MysqlDB
+	// 查询UserID对应的记录
+	var MemberInfo _type.Member
+	result := db.Find(&MemberInfo, UserID)
+	if result.RowsAffected == 0 {
+		// 用户不存在：检查 ErrRecordNotFound 错误
+		return _type.UserNotExisted
+	} else if MemberInfo.Status == _type.Deleted {
+		return _type.UserHasDeleted
+	}
+	return _type.OK
 }

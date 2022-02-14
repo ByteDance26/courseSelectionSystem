@@ -11,14 +11,16 @@ import (
 	"strings"
 )
 
-// CreateMember 创建新用户
+// CreateMember POST创建成员
 // TODO 检查当前登录用户是否是管理员 LoginRequired
+// TODO 内置管理员账号
 func CreateMember(c *gin.Context) {
 	var Response _type.CreateMemberResponse
 	var Request _type.CreateMemberRequest
 	// 获取JSON参数
-	if err := c.ShouldBind(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Connection error"})
+	if err := c.ShouldBindJSON(&Request); err != nil {
+		c.JSON(http.StatusBadRequest, Response)
+		return
 	}
 	// 将参数绑定到Member里
 	NewMember := _type.Member{
@@ -59,13 +61,14 @@ func CreateMember(c *gin.Context) {
 	c.JSON(http.StatusOK, Response)
 }
 
-// GetMember 获取当前登录用户信息
+// GetMember GET获取成员信息
 func GetMember(c *gin.Context) {
 	var Response _type.GetMemberResponse
 	var Request _type.GetMemberRequest
 	// 获取JSON参数
-	if err := c.ShouldBind(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Connection error"})
+	if err := c.ShouldBindQuery(&Request); err != nil {
+		c.JSON(http.StatusBadRequest, Response)
+		return
 	}
 	// 全局变量DB赋值
 	db := DB.MysqlDB
@@ -100,12 +103,14 @@ func GetMember(c *gin.Context) {
 	c.JSON(http.StatusOK, Response)
 }
 
+// ListMember GET批量获取成员信息
 func ListMember(c *gin.Context) {
 	var Response _type.GetMemberListResponse
 	var Request _type.GetMemberListRequest
 	// 获取JSON参数
-	if err := c.ShouldBind(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Connection error"})
+	if err := c.ShouldBindQuery(&Request); err != nil {
+		c.JSON(http.StatusBadRequest, Response)
+		return
 	}
 	// 获取Request中需要的参数Offset和Limit
 	Offset := Request.Offset
@@ -123,7 +128,7 @@ func ListMember(c *gin.Context) {
 		c.JSON(http.StatusOK, Response)
 		return
 	}
-	fmt.Println(Rows, len(ListedMembers))
+	//fmt.Println(Rows, len(ListedMembers))
 	//
 	ResponseMemberList := make([]_type.TMember, Rows)
 	for i := 0; i < int(Rows); i++ {
@@ -134,5 +139,81 @@ func ListMember(c *gin.Context) {
 	}
 	Response.Code = _type.OK
 	Response.Data.MemberList = ResponseMemberList
+	c.JSON(http.StatusOK, Response)
+}
+
+// UpdateMember POST更新成员信息
+func UpdateMember(c *gin.Context) {
+	var Response _type.UpdateMemberResponse
+	var Request _type.UpdateMemberRequest
+	// 获取JSON参数
+	if err := c.ShouldBindJSON(&Request); err != nil {
+		c.JSON(http.StatusBadRequest, Response)
+		return
+	}
+	// 获取Request中参数
+	UserID, err := strconv.Atoi(Request.UserID)
+	if err != nil {
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
+		return
+	}
+	Nickname := Request.Nickname
+	// 判断用户是否存在or已删除
+	switch Response.Code = modules.IsMemberOK(UserID); Response.Code {
+	case _type.UserNotExisted:
+		fallthrough
+	case _type.UserHasDeleted:
+		c.JSON(http.StatusOK, Response)
+		return
+	}
+	// 更新数据库
+	// 条件更新
+	db := DB.MysqlDB
+	result := db.Model(&_type.Member{}).Where("user_id = ?", UserID).Update("nickname", Nickname)
+	if err := result.Error; err != nil {
+		fmt.Println(err)
+		Response.Code = _type.UnknownError
+	} else {
+		Response.Code = _type.OK
+	}
+	c.JSON(http.StatusOK, Response)
+}
+
+// DeleteMember POST删除成员信息
+func DeleteMember(c *gin.Context) {
+	var Response _type.UpdateMemberResponse
+	var Request _type.UpdateMemberRequest
+	// 获取JSON参数
+	if err := c.ShouldBindJSON(&Request); err != nil {
+		c.JSON(http.StatusBadRequest, Response)
+		return
+	}
+	// 获取Request中参数
+	UserID, err := strconv.Atoi(Request.UserID)
+	if err != nil {
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
+		return
+	}
+	Status := _type.Deleted
+	// 判断用户是否存在or已删除
+	switch Response.Code = modules.IsMemberOK(UserID); Response.Code {
+	case _type.UserNotExisted:
+		fallthrough
+	case _type.UserHasDeleted:
+		c.JSON(http.StatusOK, Response)
+		return
+	}
+	// 更新数据库，删除用户
+	// 条件更新
+	db := DB.MysqlDB
+	result := db.Model(&_type.Member{}).Where("user_id = ?", UserID).Update("status", Status)
+	if err := result.Error; err != nil {
+		fmt.Println(err)
+		Response.Code = _type.UnknownError
+	} else {
+		Response.Code = _type.OK
+	}
 	c.JSON(http.StatusOK, Response)
 }
