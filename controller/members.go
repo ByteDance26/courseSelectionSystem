@@ -12,8 +12,8 @@ import (
 )
 
 // CreateMember POST创建成员
-// TODO 检查当前登录用户是否是管理员 LoginRequired
-// TODO 内置管理员账号
+// TODO::检查当前登录用户是否是管理员 LoginRequired
+// TODO::内置管理员账号
 func CreateMember(c *gin.Context) {
 	var Response _type.CreateMemberResponse
 	var Request _type.CreateMemberRequest

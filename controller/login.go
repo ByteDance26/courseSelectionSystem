@@ -44,6 +44,7 @@ func LoginHandle(c *gin.Context) {
 }
 
 func LogoutHandle(c *gin.Context) {
+	//TODO 参数未检查
 	id, _ := middle.GetUserId(c)
 	err := middle.DelUserId(c)
 	if err == _type.LoginRequired {
@@ -60,6 +61,7 @@ func LogoutHandle(c *gin.Context) {
 }
 
 func WhoamiHandle(c *gin.Context) {
+	//TODO 参数未检查
 	id, err := middle.GetUserId(c)
 	if err == _type.LoginRequired {
 		c.JSON(http.StatusBadRequest, _type.WhoAmIResponse{
