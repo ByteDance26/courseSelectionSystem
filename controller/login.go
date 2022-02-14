@@ -2,7 +2,7 @@ package controller
 
 import (
 	"courseSelectionSystem/middle"
-	"courseSelectionSystem/moudles"
+	"courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -17,7 +17,7 @@ func LoginHandle(c *gin.Context) {
 			Code: _type.ParamInvalid,
 		})
 	} else {
-		var mem moudles.Member
+		var mem modules.Member
 		err := mem.GetMemberByUsername(r.Username)
 		if err == gorm.ErrRecordNotFound { //check user exsist
 			c.JSON(http.StatusBadRequest, _type.LoginResponse{
@@ -66,7 +66,7 @@ func WhoamiHandle(c *gin.Context) {
 			Code: _type.LoginRequired,
 		})
 	} else {
-		var mem moudles.Member
+		var mem modules.Member
 		atoi, err2 := strconv.Atoi(id)
 		_ = err2
 		err := mem.GetMemberByUserId(atoi)

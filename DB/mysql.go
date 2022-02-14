@@ -1,7 +1,6 @@
 package DB
 
 import (
-	_type "courseSelectionSystem/type"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,7 +19,7 @@ func MysqlInit() {
 	}
 
 	//迁徙，建立表格
-	if err := db.AutoMigrate(&_type.Member{}); err != nil {
-		panic(err)
-	}
+	//if err := db.AutoMigrate(&_type.Member{}); err != nil {
+	//	panic(err)
+	//}
 }

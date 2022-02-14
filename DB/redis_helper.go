@@ -1,8 +1,8 @@
 /*
 初始调用一次 NewRedisHelper()
-之后调用 GetReidsHelper() 获取 redis操作对象
+之后调用 GetRedisHelper() 获取 redis操作对象
 c := GetRedisHelper()
-c.Clinet 使用redis
+c.Client 使用redis
 */
 package DB
 
