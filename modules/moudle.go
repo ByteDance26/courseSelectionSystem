@@ -202,12 +202,12 @@ func (bindCourse *BindCourse) Delete() (errType _type.ErrNo, err error) {
 //teacher
 
 func (Teacher) TableName() string {
-	return "member"
+	return "members"
 }
 func GetTeacherById(id int64) (*Teacher, error) {
 
 	var teacher Teacher
-	err := DB.MysqlDB.First(&teacher, "user_id = ?", id).Error
+	err := DB.MysqlDB.First(&teacher, "user_id = ? and status = ?", id, _type.Existed).Error
 	return &teacher, err
 }
 
@@ -226,15 +226,15 @@ func GetCoursesByTeacherId(id int64) (courses []*_type.TCourse, err error) {
 
 //member
 func (Member) TableName() string {
-	return "member"
+	return "members"
 }
 
 func (mem *Member) GetMemberByUsername(username string) error {
-	err := DB.MysqlDB.Table("member").Where("username = ?", username).First(mem).Error
+	err := DB.MysqlDB.Where("username = ? and status = ?", username, _type.Existed).First(mem).Error
 	return err
 }
 
 func (mem *Member) GetMemberByUserId(userId int) error {
-	err := DB.MysqlDB.Table("member").Where("user_id = ?", userId).First(mem).Error
+	err := DB.MysqlDB.Where("user_id = ? and status = ?", userId, _type.Existed).First(mem).Error
 	return err
 }
