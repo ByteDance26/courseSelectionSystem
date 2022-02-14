@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"courseSelectionSystem/moudles"
+	"courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -27,7 +27,7 @@ func GetCourse(c *gin.Context) {
 	//还没设置老师不存在
 
 	//正常情况
-	course, err := moudles.GetCourseById(id)
+	course, err := modules.GetCourseById(id)
 	if err != nil {
 		GetCourseResponse = _type.GetCourseResponse{
 			Code: _type.UnknownError,
@@ -57,7 +57,7 @@ func CreateCourse(c *gin.Context) {
 		return
 	}
 
-	course := moudles.Course{
+	course := modules.Course{
 		Name: CreateCourseRequest.Name,
 		Cap:  CreateCourseRequest.Cap,
 	}
@@ -93,7 +93,7 @@ func BindCourse(c *gin.Context) {
 		return
 	}
 
-	var bd moudles.BindCourse
+	var bd modules.BindCourse
 	var err2 error
 	if bd.CourseId, err2 = strconv.ParseInt(BindCourseRequest.CourseID, 10, 64); err2 != nil {
 		//参数错误
@@ -150,7 +150,7 @@ func UnbindCourse(c *gin.Context) {
 		return
 	}
 
-	var bd moudles.BindCourse
+	var bd modules.BindCourse
 	var err2 error
 	if bd.CourseId, err2 = strconv.ParseInt(UnbindCourseRequest.CourseID, 10, 64); err2 != nil {
 		//参数错误
@@ -210,7 +210,7 @@ func GetTeacherCourse(c *gin.Context) {
 
 	//还没设置老师不存在
 
-	courses, err := moudles.GetCoursesByTeacherId(id)
+	courses, err := modules.GetCoursesByTeacherId(id)
 	if err != nil {
 		//未知错误
 		GetTeacherCourseResponse = _type.GetTeacherCourseResponse{

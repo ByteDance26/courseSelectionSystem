@@ -1,4 +1,4 @@
-package moudles
+package modules
 
 //需要更改的地方，
 //1、为了方便，之后将关系表冗余一下

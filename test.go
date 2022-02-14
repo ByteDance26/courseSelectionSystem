@@ -3,7 +3,7 @@ package main
 import (
 	DB "courseSelectionSystem/DB"
 	"courseSelectionSystem/controller"
-	"courseSelectionSystem/moudles"
+	"courseSelectionSystem/modules"
 	"courseSelectionSystem/router"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func mainTest() {
 
 //DBTest
 func testBindCourseInsert() {
-	bd := &moudles.BindCourse{
+	bd := &modules.BindCourse{
 		CourseId:  2,
 		TeacherId: 1,
 	}
@@ -29,7 +29,7 @@ func testBindCourseInsert() {
 }
 
 func testBindCourseDelete() {
-	bd := &moudles.BindCourse{
+	bd := &modules.BindCourse{
 		CourseId:  2,
 		TeacherId: 1,
 	}
@@ -37,18 +37,18 @@ func testBindCourseDelete() {
 	fmt.Println(errTy, err)
 }
 func testGetCoursesByTeacherId() {
-	courses, err := moudles.GetCoursesByTeacherId(1)
+	courses, err := modules.GetCoursesByTeacherId(1)
 	fmt.Printf("courses:%v,err:%v", courses[0], err)
 }
 func testGetTeacherById() {
-	teacher, err := moudles.GetTeacherById(1)
+	teacher, err := modules.GetTeacherById(1)
 	if err != nil {
 		panic(fmt.Sprintln(err))
 	}
 	fmt.Println(teacher)
 }
 func testGetCourseByID() {
-	course, err := moudles.GetCourseById(1)
+	course, err := modules.GetCourseById(1)
 	fmt.Printf(" %v courses:%v,err:%v", *course, course, err)
 }
 
