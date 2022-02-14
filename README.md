@@ -5,6 +5,7 @@
 # 内容
 数据库初始化加入了Automigrate部分:
 - DB/mysql
+
 另外修改了moudles文件夹的名字为modules
 
 新增三个代码文件：
