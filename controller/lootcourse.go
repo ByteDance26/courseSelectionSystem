@@ -1,8 +1,8 @@
 package controller
 
 import (
-	modules "awesomeProject1/modules"
-	_type "awesomeProject1/type"
+	modules "courseSelectionSystem/modules"
+	_type "courseSelectionSystem/type"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

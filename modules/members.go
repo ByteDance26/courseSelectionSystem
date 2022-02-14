@@ -1,8 +1,8 @@
 package modules
 
 import (
-	"awesomeProject1/DB"
-	_type "awesomeProject1/type"
+	"courseSelectionSystem/DB"
+	_type "courseSelectionSystem/type"
 	"regexp"
 	"unicode"
 )

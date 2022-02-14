@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"awesomeProject1/DB"
-	"awesomeProject1/modules"
-	_type "awesomeProject1/type"
+	"courseSelectionSystem/DB"
+	"courseSelectionSystem/modules"
+	_type "courseSelectionSystem/type"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"

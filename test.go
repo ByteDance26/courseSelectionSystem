@@ -1,10 +1,10 @@
 package main
 
 import (
-	"awesomeProject1/DB"
-	"awesomeProject1/controller"
-	"awesomeProject1/modules"
-	"awesomeProject1/router"
+	"courseSelectionSystem/DB"
+	"courseSelectionSystem/controller"
+	"courseSelectionSystem/modules"
+	"courseSelectionSystem/router"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )

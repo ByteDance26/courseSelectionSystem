@@ -1,4 +1,4 @@
-module awesomeProject1
+module courseSelectionSystem
 
 go 1.17
 

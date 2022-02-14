@@ -5,8 +5,8 @@ package modules
 //2、老师不存在错误的处理，等统一了再去写
 
 import (
-	"awesomeProject1/DB"
-	_type "awesomeProject1/type"
+	"courseSelectionSystem/DB"
+	_type "courseSelectionSystem/type"
 	"errors"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

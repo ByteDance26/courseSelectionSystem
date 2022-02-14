@@ -1,7 +1,7 @@
 package router
 
 import (
-	"awesomeProject1/controller"
+	"courseSelectionSystem/controller"
 	"github.com/gin-gonic/gin"
 )
 

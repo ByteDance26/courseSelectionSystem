@@ -1,7 +1,7 @@
 package DB
 
 import (
-	_type "awesomeProject1/type"
+	_type "courseSelectionSystem/type"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,7 +11,7 @@ import (
 var MysqlDB *gorm.DB
 
 func MysqlInit() {
-	dsn := "root:ByteDance26!@tcp(127.0.0.1:3306)/gorm_test?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:ByteDance26!@tcp(180.184.70.231:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
 	if err != nil {
 		panic(fmt.Sprintf("open mysql failed, err is %s", err))
