@@ -66,18 +66,17 @@ func isPasswordValid(pwd string) bool {
 	return level == len(patternList)
 }
 
-// 判断修改or删除的用户是否存在或者已经删除
-func IsMemberOK(UserID int) _type.ErrNo {
+// IsMemberOK 判断修改or删除的用户是否存在或者已经删除
+func IsMemberOK(UserID int) (Code _type.ErrNo, MemberInfo _type.Member) {
 	// 全局变量DB赋值
 	db := DB.MysqlDB
 	// 查询UserID对应的记录
-	var MemberInfo _type.Member
 	result := db.Find(&MemberInfo, UserID)
 	if result.RowsAffected == 0 {
 		// 用户不存在：检查 ErrRecordNotFound 错误
-		return _type.UserNotExisted
+		Code = _type.UserNotExisted
 	} else if MemberInfo.Status == _type.Deleted {
-		return _type.UserHasDeleted
+		Code = _type.UserHasDeleted
 	}
-	return _type.OK
+	return
 }
