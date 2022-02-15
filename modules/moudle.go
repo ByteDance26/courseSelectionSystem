@@ -10,6 +10,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strconv"
 )
 
 type Course struct {
@@ -65,6 +66,7 @@ func (bindCourse *BindCourse) Insert() (errType _type.ErrNo, err error) {
 			course  Course
 			bc      BindCourse
 			teacher Teacher
+			tCourse _type.TCourse
 		)
 		//判断课程是否存在
 		if err1 := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
@@ -110,8 +112,12 @@ func (bindCourse *BindCourse) Insert() (errType _type.ErrNo, err error) {
 				return nil
 			}
 			errType = _type.OK
+			tCourse.CourseID = strconv.FormatInt(bindCourse.CourseId, 10)
+			tCourse.TeacherID = strconv.FormatInt(bindCourse.TeacherId, 10)
+			tCourse.Name = course.Name
+			//添加课程
+			DB.CreateCourse(tCourse, course.Cap)
 			return nil
-
 		} else if err2 != nil {
 			//说明有其他错误
 			errType = _type.UnknownError
@@ -192,6 +198,7 @@ func (bindCourse *BindCourse) Delete() (errType _type.ErrNo, err error) {
 				return nil
 			}
 			errType = _type.OK
+			DB.DeleteCourse(strconv.FormatInt(course.CourseId, 10))
 			return nil
 		}
 		return nil
