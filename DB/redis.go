@@ -35,16 +35,20 @@ const (
 `
 )
 
+var newScript *redis.Script
+
 func RedisInit() {
 	RedisDB = &redis.Pool{ //实例化一个连接池
-		MaxIdle: 16, //最初的连接数量
+		MaxIdle: 32, //最初的连接数量
 		// MaxActive:1000000,    //最大连接数量
 		MaxActive:   0,   //连接池最大连接数量,不确定可以用0（0表示自动定义），按需分配
 		IdleTimeout: 300, //连接关闭时间 300秒 （300秒不使用自动关闭）
 		Dial: func() (redis.Conn, error) { //要连接的redis数据库
-			return redis.Dial("tcp", "1.15.114.229:7000")
+			return redis.Dial("tcp", "180.184.70.231:6379")
 		},
 	}
+	//脚本预加载
+	newScript = redis.NewScript(2, SCRIPT_INCR)
 }
 
 //redis中存的数据
@@ -87,7 +91,7 @@ func CreateCourse(course _type.TCourse, cap int) {
 func AddCourse(studentID string, courseID string) int {
 	c := RedisDB.Get()
 	defer c.Close()
-	newScript := redis.NewScript(2, SCRIPT_INCR)
+
 	ret, err := redis.Int(newScript.Do(c, studentID, courseID))
 	if err != nil {
 		return 0
@@ -107,12 +111,14 @@ func CreateStudent(studentID string) {
 	}
 }
 
-//删除学生
+//删除学生,改善删除学生的函数
 
 func DeleteStudent(studentID string) {
 	c := RedisDB.Get()
 	defer c.Close()
+	//"student_"..studentID.."_course"
 	_, err := c.Do("srem", "student", studentID)
+	_, err = c.Do("del", "student_"+studentID+"_course")
 	if err != nil {
 		fmt.Println(err)
 	}
