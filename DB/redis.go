@@ -80,6 +80,27 @@ func CreateCourse(course _type.TCourse, cap int) {
 	return
 }
 
+//用于解绑的时候进行课程的删除
+
+func DeleteCourse(courseID string) {
+	c := RedisDB.Get()
+	defer c.Close()
+	var err error
+	//用于保存课程信息
+	_, err = c.Do("srem", "course", courseID)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	//用于抢课的课程信息
+	_, err = c.Do("del", "course_"+courseID+"_take", cap)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return
+}
+
 //选课,原子操作,
 //返回值为1表示的是抢课成功
 //返回值为2表示的是已经选了课
