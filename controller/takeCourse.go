@@ -24,7 +24,27 @@ func BookCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, BookCourseResponse)
 		return
 	}
+
+	//初始化
+	BookCourseResponse = _type.BookCourseResponse{
+		Code: _type.OK,
+	}
+
 	//判断课程是否存在
+	ok := DB.BoolCourse(BookCourseRequest.CourseID)
+	if !ok {
+		BookCourseResponse.Code = _type.CourseNotExisted
+		c.JSON(http.StatusOK, BookCourseResponse)
+		return
+	}
+	//学生不存在
+	ok = DB.BoolStudent(BookCourseRequest.StudentID)
+	if !ok {
+		BookCourseResponse.Code = _type.StudentNotExisted
+		c.JSON(http.StatusOK, BookCourseResponse)
+		return
+
+	}
 	//判断学生是否存在
 
 	//选课,原子操作,
