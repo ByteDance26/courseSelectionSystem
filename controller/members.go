@@ -49,7 +49,7 @@ func CreateMember(c *gin.Context) {
 		if result.Error == nil {
 			// Username 没有重复，成功创建
 			Response.Data.UserID = strconv.Itoa(int(NewMember.UserID))
-		} else if Error := fmt.Sprintf("/v", result.Error); strings.Contains(Error, "Error 1062") {
+		} else if Error := fmt.Sprintf("%v", result.Error); strings.Contains(Error, "Error 1062") {
 			// Username 重复
 			Response.Code = _type.UserHasExisted
 			Response.Data.UserID = ""
