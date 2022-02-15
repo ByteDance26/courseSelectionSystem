@@ -17,3 +17,7 @@ type Member struct {
 	UserType UserType   `form:"UserType" json:"UserType" binding:"required" gorm:"type:tinyint"`
 	Status   StatusType `gorm:"type:tinyint;default:1"`
 }
+
+const (
+	AdminUser string = "JudgeAdmin"
+)

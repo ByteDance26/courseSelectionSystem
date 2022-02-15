@@ -2,10 +2,12 @@ package controller
 
 import (
 	"courseSelectionSystem/DB"
+	"courseSelectionSystem/middle"
 	"courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,7 +21,8 @@ func CreateMember(c *gin.Context) {
 	var Request _type.CreateMemberRequest
 	// 获取JSON参数
 	if err := c.ShouldBindJSON(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, Response)
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
 		return
 	}
 	// 将参数绑定到Member里
@@ -29,6 +32,30 @@ func CreateMember(c *gin.Context) {
 		Password: Request.Password,
 		UserType: Request.UserType,
 		Status:   _type.Existed,
+	}
+
+	//判断是否登录且是管理员
+	s, err := middle.GetSimpleSession(c)
+	if err == _type.SessionError {
+		Response.Code = _type.UnknownError
+		c.JSON(http.StatusOK, Response)
+		return
+	} else {
+		//判断登录
+		if s.Value["userId"] == nil {
+			Response.Code = _type.LoginRequired
+			c.JSON(http.StatusOK, Response)
+			return
+		}
+		//判断是管理员
+		var mem modules.Member
+		idNum, _ := strconv.Atoi(s.Value["userId"].(string))
+		err := mem.GetMemberByUserId(idNum)
+		if err == gorm.ErrRecordNotFound || mem.UserType != int(_type.Admin) {
+			Response.Code = _type.PermDenied
+			c.JSON(http.StatusOK, Response)
+			return
+		}
 	}
 	// 判断参数是否合法
 	if modules.IsMemberParamValid(NewMember) {
@@ -48,7 +75,7 @@ func CreateMember(c *gin.Context) {
 		if result.Error == nil {
 			// Username 没有重复，成功创建
 			Response.Data.UserID = strconv.Itoa(int(NewMember.UserID))
-		} else if Error := fmt.Sprintf("/v", result.Error); strings.Contains(Error, "Error 1062") {
+		} else if Error := fmt.Sprintf("%v", result.Error); strings.Contains(Error, "Error 1062") {
 			// Username 重复
 			Response.Code = _type.UserHasExisted
 			Response.Data.UserID = ""
@@ -67,7 +94,9 @@ func GetMember(c *gin.Context) {
 	var Request _type.GetMemberRequest
 	// 获取JSON参数
 	if err := c.ShouldBindQuery(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, Response)
+		c.JSON(http.StatusOK, _type.GetMemberResponse{
+			Code: _type.ParamInvalid,
+		})
 		return
 	}
 	// 全局变量DB赋值
@@ -109,7 +138,9 @@ func ListMember(c *gin.Context) {
 	var Request _type.GetMemberListRequest
 	// 获取JSON参数
 	if err := c.ShouldBindQuery(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, Response)
+		c.JSON(http.StatusBadRequest, _type.GetCourseResponse{
+			Code: _type.UnknownError,
+		})
 		return
 	}
 	// 获取Request中需要的参数Offset和Limit

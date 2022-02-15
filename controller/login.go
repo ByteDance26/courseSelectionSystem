@@ -12,7 +12,7 @@ import (
 
 func LoginHandle(c *gin.Context) {
 	var r _type.LoginRequest
-	if err := c.ShouldBind(&r); err != nil {
+	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusBadRequest, _type.LoginResponse{
 			Code: _type.ParamInvalid,
 		})
