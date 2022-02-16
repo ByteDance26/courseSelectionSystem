@@ -76,7 +76,9 @@ func CreateMember(c *gin.Context) {
 			// Username 没有重复，成功创建
 			Response.Data.UserID = strconv.Itoa(int(NewMember.UserID))
 			//updateRedis
-			DB.CreateStudent(strconv.Itoa(int(NewMember.UserID)))
+			if NewMember.UserType == _type.Student {
+				DB.CreateStudent(strconv.Itoa(int(NewMember.UserID)))
+			}
 		} else if Error := fmt.Sprintf("%v", result.Error); strings.Contains(Error, "Error 1062") {
 			// Username 重复
 			Response.Code = _type.UserHasExisted

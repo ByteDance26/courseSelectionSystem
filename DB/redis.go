@@ -220,7 +220,7 @@ type Course struct {
 func InitMemRedis() {
 	db := MysqlDB
 	var ListedMembers []_type.Member
-	result := db.Find(&ListedMembers, "status = ?", _type.Existed)
+	result := db.Table("members").Find(&ListedMembers, "status = ? and user_type = ?", _type.Existed, _type.Student)
 	for i := 0; i < int(result.RowsAffected); i++ {
 		CreateStudent(strconv.Itoa(int(ListedMembers[i].UserID)))
 	}
