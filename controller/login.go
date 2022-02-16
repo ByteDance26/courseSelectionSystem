@@ -13,19 +13,19 @@ import (
 func LoginHandle(c *gin.Context) {
 	var r _type.LoginRequest
 	if err := c.ShouldBindJSON(&r); err != nil {
-		c.JSON(http.StatusBadRequest, _type.LoginResponse{
+		c.JSON(http.StatusOK, _type.LoginResponse{
 			Code: _type.ParamInvalid,
 		})
 	} else {
 		var mem modules.Member
 		err := mem.GetMemberByUsername(r.Username)
 		if err == gorm.ErrRecordNotFound { //check user exsist
-			c.JSON(http.StatusBadRequest, _type.LoginResponse{
+			c.JSON(http.StatusOK, _type.LoginResponse{
 				Code: _type.WrongPassword,
 			})
 		} else {
 			if r.Password != mem.Password { // check password
-				c.JSON(http.StatusBadRequest, _type.LoginResponse{
+				c.JSON(http.StatusOK, _type.LoginResponse{
 					Code: _type.WrongPassword,
 				})
 			} else { //ok login
@@ -34,7 +34,7 @@ func LoginHandle(c *gin.Context) {
 				s, err := middle.GetSimpleSession(c)
 				_ = err
 				c.SetCookie("camp-session", s.SessionID, 999, "/", "localhost", false, true)
-				c.JSON(http.StatusBadRequest, _type.LoginResponse{
+				c.JSON(http.StatusOK, _type.LoginResponse{
 					Code: _type.OK,
 					Data: struct{ UserID string }{UserID: userIdStr},
 				})
@@ -48,7 +48,7 @@ func LogoutHandle(c *gin.Context) {
 	id, _ := middle.GetUserId(c)
 	err := middle.DelUserId(c)
 	if err == _type.LoginRequired {
-		c.JSON(http.StatusBadRequest, _type.LogoutResponse{
+		c.JSON(http.StatusOK, _type.LogoutResponse{
 			Code: _type.LoginRequired,
 		})
 	} else {
@@ -64,7 +64,7 @@ func WhoamiHandle(c *gin.Context) {
 	//TODO 参数未检查
 	id, err := middle.GetUserId(c)
 	if err == _type.LoginRequired {
-		c.JSON(http.StatusBadRequest, _type.WhoAmIResponse{
+		c.JSON(http.StatusOK, _type.WhoAmIResponse{
 			Code: _type.LoginRequired,
 		})
 	} else {
@@ -73,7 +73,7 @@ func WhoamiHandle(c *gin.Context) {
 		_ = err2
 		err := mem.GetMemberByUserId(atoi)
 		if err == gorm.ErrRecordNotFound { //check user exsist
-			c.JSON(http.StatusBadRequest, _type.LoginResponse{
+			c.JSON(http.StatusOK, _type.LoginResponse{
 				Code: _type.UserHasDeleted,
 			})
 		} else {
