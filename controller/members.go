@@ -94,9 +94,9 @@ func GetMember(c *gin.Context) {
 	var Request _type.GetMemberRequest
 	// 获取JSON参数
 	if err := c.ShouldBindQuery(&Request); err != nil {
-		c.JSON(http.StatusOK, _type.GetMemberResponse{
-			Code: _type.ParamInvalid,
-		})
+		fmt.Println(err)
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
 		return
 	}
 	// 全局变量DB赋值
@@ -138,9 +138,8 @@ func ListMember(c *gin.Context) {
 	var Request _type.GetMemberListRequest
 	// 获取JSON参数
 	if err := c.ShouldBindQuery(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, _type.GetCourseResponse{
-			Code: _type.UnknownError,
-		})
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
 		return
 	}
 	// 获取Request中需要的参数Offset和Limit
@@ -179,7 +178,9 @@ func UpdateMember(c *gin.Context) {
 	var Request _type.UpdateMemberRequest
 	// 获取JSON参数
 	if err := c.ShouldBindJSON(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, Response)
+		fmt.Println(err)
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
 		return
 	}
 	// 获取Request中参数
@@ -191,7 +192,7 @@ func UpdateMember(c *gin.Context) {
 	}
 	Nickname := Request.Nickname
 	// 判断用户是否存在or已删除
-	switch Response.Code = modules.IsMemberOK(UserID); Response.Code {
+	switch Response.Code, _ = modules.IsMemberOK(UserID); Response.Code {
 	case _type.UserNotExisted:
 		fallthrough
 	case _type.UserHasDeleted:
@@ -213,11 +214,12 @@ func UpdateMember(c *gin.Context) {
 
 // DeleteMember POST删除成员信息
 func DeleteMember(c *gin.Context) {
-	var Response _type.DeleteMemberResponse
-	var Request _type.DeleteMemberRequest
+	var Response _type.UpdateMemberResponse
+	var Request _type.UpdateMemberRequest
 	// 获取JSON参数
 	if err := c.ShouldBindJSON(&Request); err != nil {
-		c.JSON(http.StatusBadRequest, Response)
+		Response.Code = _type.ParamInvalid
+		c.JSON(http.StatusOK, Response)
 		return
 	}
 	// 获取Request中参数
@@ -229,7 +231,7 @@ func DeleteMember(c *gin.Context) {
 	}
 	Status := _type.Deleted
 	// 判断用户是否存在or已删除
-	switch Response.Code = modules.IsMemberOK(UserID); Response.Code {
+	switch Response.Code, _ = modules.IsMemberOK(UserID); Response.Code {
 	case _type.UserNotExisted:
 		fallthrough
 	case _type.UserHasDeleted:
