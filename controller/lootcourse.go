@@ -20,7 +20,7 @@ func GetCourse(c *gin.Context) {
 		GetCourseResponse = _type.GetCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, GetCourseResponse)
+		c.JSON(http.StatusOK, GetCourseResponse)
 		return
 	}
 
@@ -32,7 +32,7 @@ func GetCourse(c *gin.Context) {
 		GetCourseResponse = _type.GetCourseResponse{
 			Code: _type.UnknownError,
 		}
-		c.JSON(http.StatusBadRequest, GetCourseResponse)
+		c.JSON(http.StatusOK, GetCourseResponse)
 		return
 	}
 	GetCourseResponse = _type.GetCourseResponse{
@@ -52,7 +52,7 @@ func CreateCourse(c *gin.Context) {
 		CreateCourseResponse = _type.CreateCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, CreateCourseResponse)
+		c.JSON(http.StatusOK, CreateCourseResponse)
 		//fmt.Println(err)
 		return
 	}
@@ -69,7 +69,7 @@ func CreateCourse(c *gin.Context) {
 		CreateCourseResponse = _type.CreateCourseResponse{
 			Code: _type.UnknownError,
 		}
-		c.JSON(http.StatusBadRequest, CreateCourseResponse)
+		c.JSON(http.StatusOK, CreateCourseResponse)
 		return
 	}
 	//创建成功
@@ -89,7 +89,7 @@ func BindCourse(c *gin.Context) {
 		BindCourseResponse = _type.BindCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, BindCourseResponse)
+		c.JSON(http.StatusOK, BindCourseResponse)
 		return
 	}
 
@@ -100,7 +100,7 @@ func BindCourse(c *gin.Context) {
 		BindCourseResponse = _type.BindCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, BindCourseResponse)
+		c.JSON(http.StatusOK, BindCourseResponse)
 		return
 	}
 	if bd.TeacherId, err2 = strconv.ParseInt(BindCourseRequest.TeacherID, 10, 64); err2 != nil {
@@ -108,7 +108,7 @@ func BindCourse(c *gin.Context) {
 		BindCourseResponse = _type.BindCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, BindCourseResponse)
+		c.JSON(http.StatusOK, BindCourseResponse)
 		return
 	}
 	var errType _type.ErrNo
@@ -133,7 +133,7 @@ func BindCourse(c *gin.Context) {
 	default:
 		break
 	}
-	c.JSON(http.StatusBadRequest, BindCourseResponse) //TODO::对OK，http返回码不对
+	c.JSON(http.StatusOK, BindCourseResponse) //TODO::对OK，http返回码不对
 	return
 }
 
@@ -146,7 +146,7 @@ func UnbindCourse(c *gin.Context) {
 		UnbindCourseResponse = _type.UnbindCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, UnbindCourseResponse)
+		c.JSON(http.StatusOK, UnbindCourseResponse)
 		return
 	}
 
@@ -157,7 +157,7 @@ func UnbindCourse(c *gin.Context) {
 		UnbindCourseResponse = _type.UnbindCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, UnbindCourseResponse)
+		c.JSON(http.StatusOK, UnbindCourseResponse)
 		return
 	}
 	if bd.TeacherId, err2 = strconv.ParseInt(UnbindCourseRequest.TeacherID, 10, 64); err2 != nil {
@@ -165,7 +165,7 @@ func UnbindCourse(c *gin.Context) {
 		UnbindCourseResponse = _type.UnbindCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, UnbindCourseResponse)
+		c.JSON(http.StatusOK, UnbindCourseResponse)
 		return
 	}
 	var errType _type.ErrNo
@@ -190,7 +190,7 @@ func UnbindCourse(c *gin.Context) {
 	default:
 		break
 	}
-	c.JSON(http.StatusBadRequest, UnbindCourseResponse)
+	c.JSON(http.StatusOK, UnbindCourseResponse)
 	return
 }
 
@@ -204,7 +204,7 @@ func GetTeacherCourse(c *gin.Context) {
 		GetTeacherCourseResponse = _type.GetTeacherCourseResponse{
 			Code: _type.ParamInvalid,
 		}
-		c.JSON(http.StatusBadRequest, GetTeacherCourseResponse)
+		c.JSON(http.StatusOK, GetTeacherCourseResponse)
 		return
 	}
 
@@ -216,7 +216,7 @@ func GetTeacherCourse(c *gin.Context) {
 		GetTeacherCourseResponse = _type.GetTeacherCourseResponse{
 			Code: _type.UnknownError,
 		}
-		c.JSON(http.StatusBadRequest, GetTeacherCourseResponse)
+		c.JSON(http.StatusOK, GetTeacherCourseResponse)
 		return
 	}
 	//正常返回
@@ -233,13 +233,13 @@ func ScheduleCourse(c *gin.Context) {
 	if err := c.ShouldBindJSON(&m); err != nil {
 		//参数错误
 		ScheduleCourseResponse.Code = _type.ParamInvalid
-		c.JSON(http.StatusBadRequest, ScheduleCourseResponse)
+		c.JSON(http.StatusOK, ScheduleCourseResponse)
 		return
 	}
 	tu := Tu(m)
 	ScheduleCourseResponse.Data = tu
 	ScheduleCourseResponse.Code = _type.OK
-	c.JSON(http.StatusBadRequest, ScheduleCourseResponse)
+	c.JSON(http.StatusOK, ScheduleCourseResponse)
 	return
 }
 
