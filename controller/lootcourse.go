@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"courseSelectionSystem/DB"
 	"courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
 	"github.com/gin-gonic/gin"
@@ -77,6 +78,7 @@ func CreateCourse(c *gin.Context) {
 		Code: _type.OK,
 	}
 	CreateCourseResponse.Data.CourseID = strconv.FormatInt(course.CourseId, 10)
+	//update redis
 	c.JSON(http.StatusOK, CreateCourseResponse)
 }
 
@@ -117,6 +119,14 @@ func BindCourse(c *gin.Context) {
 	//正常情况
 	case _type.OK:
 		BindCourseResponse.Code = _type.OK
+		//update Redis
+		tc, err := modules.GetCourseById(bd.CourseId)
+		_ = err
+		var course []DB.Course
+		res := DB.MysqlDB.Table("course").Find(&course, "course_id = ?", bd.CourseId)
+		if res.RowsAffected > 0 {
+			DB.CreateCourse(*tc, course[0].Cap)
+		}
 		break
 	//未知错误
 	case _type.UnknownError:
@@ -174,6 +184,8 @@ func UnbindCourse(c *gin.Context) {
 	//正常情况
 	case _type.OK:
 		UnbindCourseResponse.Code = _type.OK
+		//update Redis
+		DB.DeleteCourse(strconv.FormatInt(bd.CourseId, 10))
 		break
 	//未知错误
 	case _type.UnknownError:

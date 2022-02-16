@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
+	"strconv"
 )
 
 var RedisDB *redis.Pool
@@ -48,6 +49,9 @@ func RedisInit() {
 		},
 	}
 	//脚本预加载
+	c := RedisDB.Get()
+	c.Do("flushdb")
+	c.Close()
 	newScript = redis.NewScript(2, SCRIPT_INCR)
 }
 
@@ -205,4 +209,30 @@ func GetCourses(studentID string) (ret []_type.TCourse) {
 		}
 	}
 	return ret
+}
+
+type Course struct {
+	CourseId int64 `gorm:"primary_key;AUTO_INCREMENT;"`
+	Name     string
+	Cap      int
+}
+
+func InitMemRedis() {
+	db := MysqlDB
+	var ListedMembers []_type.Member
+	result := db.Find(&ListedMembers, "status = ?", _type.Existed)
+	for i := 0; i < int(result.RowsAffected); i++ {
+		CreateStudent(strconv.Itoa(int(ListedMembers[i].UserID)))
+	}
+	var ListedTCourses []_type.TCourse
+	result = db.Table("bind_course").Find(&ListedTCourses)
+	for i := 0; i < int(result.RowsAffected); i++ {
+		var course []Course
+		courseId, err := strconv.Atoi(ListedTCourses[i].CourseID)
+		_ = err
+		res := db.Table("course").Find(&course, "course_id = ?", courseId)
+		if res.RowsAffected > 0 {
+			CreateCourse(ListedTCourses[i], course[0].Cap)
+		}
+	}
 }

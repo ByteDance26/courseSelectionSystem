@@ -8,9 +8,10 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	DB.RedisInit()
 	DB.MysqlInit()
-	DB.NewRedisHelper()
+	DB.InitMemRedis()
+	r := gin.Default()
 
 	middle.InitSimpleSessionPool() //中间件 SimpleSessionPool
 	r.Use(middle.HandleSimpleSession("camp-session"))
