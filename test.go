@@ -1,7 +1,7 @@
 package main
 
 import (
-	DB "courseSelectionSystem/DB"
+	"courseSelectionSystem/DB"
 	"courseSelectionSystem/controller"
 	"courseSelectionSystem/modules"
 	"courseSelectionSystem/router"
@@ -55,10 +55,10 @@ func testGetCourseByID() {
 //算法Test
 func testTu() {
 	m := map[string][]string{
-		"1": []string{"1", "2"},
-		"2": []string{"2", "3"},
-		"3": []string{"1", "2"},
-		"4": []string{"3"},
+		"1": {"1", "2"},
+		"2": {"2", "3"},
+		"3": {"1", "2"},
+		"4": {"3"},
 	}
 	tu := controller.Tu(m)
 	fmt.Printf("%v", tu)

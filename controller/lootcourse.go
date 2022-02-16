@@ -1,7 +1,7 @@
 package controller
 
 import (
-	modules "courseSelectionSystem/modules"
+	"courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -249,7 +249,7 @@ func Tu(edge map[string][]string) (ret map[string]string) {
 	//表示结果,同时老师是否选择次课程
 	ret = make(map[string]string)
 
-	for key, _ := range edge {
+	for key := range edge {
 		if _, ok := ret[key]; !ok {
 			visit := make(map[string]bool)
 			if dfs(edge, m, visit, ret, key) {

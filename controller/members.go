@@ -213,8 +213,8 @@ func UpdateMember(c *gin.Context) {
 
 // DeleteMember POST删除成员信息
 func DeleteMember(c *gin.Context) {
-	var Response _type.UpdateMemberResponse
-	var Request _type.UpdateMemberRequest
+	var Response _type.DeleteMemberResponse
+	var Request _type.DeleteMemberRequest
 	// 获取JSON参数
 	if err := c.ShouldBindJSON(&Request); err != nil {
 		c.JSON(http.StatusBadRequest, Response)
