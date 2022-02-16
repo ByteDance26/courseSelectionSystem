@@ -93,7 +93,7 @@ func DeleteCourse(courseID string) {
 		return
 	}
 	//用于抢课的课程信息
-	_, err = c.Do("del", "course_"+courseID+"_take", cap)
+	_, err = c.Do("del", "course_"+courseID+"_take")
 	if err != nil {
 		fmt.Println(err)
 		return
