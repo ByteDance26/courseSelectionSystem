@@ -15,5 +15,5 @@ func main() {
 	middle.InitSimpleSessionPool() //中间件 SimpleSessionPool
 	r.Use(middle.HandleSimpleSession("camp-session"))
 	router.RegisterRouter(r)
-	r.Run(":8000")
+	r.Run(":80")
 }
