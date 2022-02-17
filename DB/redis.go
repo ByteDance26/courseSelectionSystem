@@ -44,8 +44,9 @@ func RedisInit() {
 		// MaxActive:1000000,    //最大连接数量
 		MaxActive:   0,   //连接池最大连接数量,不确定可以用0（0表示自动定义），按需分配
 		IdleTimeout: 300, //连接关闭时间 300秒 （300秒不使用自动关闭）
+
 		Dial: func() (redis.Conn, error) { //要连接的redis数据库
-			return redis.Dial("tcp", "180.184.70.231:6379")
+			return redis.Dial("tcp", "180.184.70.231:6379", redis.DialPassword("ByteDance26!"))
 		},
 	}
 	//脚本预加载
@@ -72,12 +73,14 @@ func CreateCourse(course _type.TCourse, cap int) {
 	//课程的详细信息
 	_, err = c.Do("hset", "course", course.CourseID, str)
 	if err != nil {
+		fmt.Println("======================================================================================================")
 		fmt.Println(err)
 		return
 	}
 	//用于抢课的课程信息
 	_, err = c.Do("set", "course_"+course.CourseID+"_take", cap)
 	if err != nil {
+		fmt.Println("======================================================================================================")
 		fmt.Println(err)
 		return
 	}
@@ -91,7 +94,7 @@ func DeleteCourse(courseID string) {
 	defer c.Close()
 	var err error
 	//用于保存课程信息
-	_, err = c.Do("srem", "course", courseID)
+	_, err = c.Do("hdel", "course", courseID)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -232,6 +235,7 @@ func InitMemRedis() {
 		_ = err
 		res := db.Table("course").Find(&course, "course_id = ?", courseId)
 		if res.RowsAffected > 0 {
+			ListedTCourses[i].Name = course[0].Name
 			CreateCourse(ListedTCourses[i], course[0].Cap)
 		}
 	}
