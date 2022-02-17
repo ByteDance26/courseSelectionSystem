@@ -15,7 +15,7 @@ func LoginHandle(c *gin.Context) {
 	var r _type.LoginRequest
 	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusOK, _type.LoginResponse{
-			Code: _type.ParamInvalid,
+			Code: _type.WrongPassword,
 		})
 	} else {
 		var mem modules.Member
