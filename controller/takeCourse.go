@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 //redis中存的数据
@@ -72,17 +73,18 @@ func BookCourse(c *gin.Context) {
 }
 
 func GetStudentCourse(c *gin.Context) {
-	var GetStudentCourseRequest _type.GetStudentCourseRequest
+
 	var GetStudentCourseResponse _type.GetStudentCourseResponse
-	if err := c.ShouldBindJSON(&GetStudentCourseRequest); err != nil {
-		//参数错误
+	studentID := c.Query("StudentID")
+	if _, err := strconv.ParseInt(studentID, 10, 64); err != nil {
 		GetStudentCourseResponse = _type.GetStudentCourseResponse{
 			Code: _type.ParamInvalid,
 		}
 		c.JSON(http.StatusOK, GetStudentCourseResponse)
 		return
+
 	}
-	xx := DB.BoolStudent(GetStudentCourseRequest.StudentID)
+	xx := DB.BoolStudent(studentID)
 	if !xx {
 		//学生不存在
 		GetStudentCourseResponse = _type.GetStudentCourseResponse{
@@ -91,7 +93,7 @@ func GetStudentCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, GetStudentCourseResponse)
 		return
 	}
-	courses := DB.GetCourses(GetStudentCourseRequest.StudentID)
+	courses := DB.GetCourses(studentID)
 	if len(courses) == 0 {
 		//学生没有课程
 		GetStudentCourseResponse = _type.GetStudentCourseResponse{
