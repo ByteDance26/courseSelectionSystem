@@ -42,16 +42,24 @@ func (tmp *SimpleSession) Set(name string, val interface{}) {
 	tmp.Value[name] = val
 }
 
-var sessionPool map[string]*SimpleSession
+var sessionPool struct {
+	sync.RWMutex
+	m map[string]*SimpleSession
+}
 var userIdMapSessionID map[string]string
 
 func InitSimpleSessionPool() {
-	sessionPool = make(map[string]*SimpleSession)
+	sessionPool = struct {
+		sync.RWMutex
+		m map[string]*SimpleSession
+	}{m: make(map[string]*SimpleSession)}
 	userIdMapSessionID = make(map[string]string)
 }
 
 func getSimpleSessionBySessionID(key string) *SimpleSession {
-	v, ok := sessionPool[key]
+	sessionPool.RLock()
+	v, ok := sessionPool.m[key]
+	sessionPool.RUnlock()
 	if !ok {
 		return nil
 	} else {
@@ -60,7 +68,9 @@ func getSimpleSessionBySessionID(key string) *SimpleSession {
 }
 
 func InsertIntoSessionMap(s *SimpleSession) {
-	sessionPool[s.SessionID] = s
+	sessionPool.Lock()
+	sessionPool.m[s.SessionID] = s
+	sessionPool.Unlock()
 }
 
 func HandleSimpleSession(name string) gin.HandlerFunc {
@@ -76,7 +86,6 @@ func HandleSimpleSession(name string) gin.HandlerFunc {
 			s = getSimpleSessionBySessionID(key)
 		}
 		c.Set("session", s)
-		//c.Next()
 	}
 }
 
@@ -117,14 +126,11 @@ func SetUserId(c *gin.Context, userId string) (err _type.ErrNo) {
 	} else {
 		s = val.(*SimpleSession)
 	}
-	var mutex sync.Mutex
-	mutex.Lock()
 	if val, has := userIdMapSessionID[userId]; has {
 		getSimpleSessionBySessionID(val).Value["userId"] = nil
 	}
 	userIdMapSessionID[userId] = s.SessionID
 	s.Value["userId"] = userId
-	mutex.Unlock()
 	return _type.OK
 }
 

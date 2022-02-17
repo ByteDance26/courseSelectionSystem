@@ -63,7 +63,3 @@ func testTu() {
 	tu := controller.Tu(m)
 	fmt.Printf("%v", tu)
 }
-
-func testMiddle() {
-
-}
