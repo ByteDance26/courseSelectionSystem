@@ -25,8 +25,6 @@ func GetCourse(c *gin.Context) {
 		return
 	}
 
-	//还没设置老师不存在
-
 	//正常情况
 	course, err := modules.GetCourseById(id)
 	if err != nil {
@@ -36,10 +34,19 @@ func GetCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, GetCourseResponse)
 		return
 	}
-	GetCourseResponse = _type.GetCourseResponse{
-		Code: _type.OK,
-		Data: *course,
+	if course.CourseID == "" {
+		//表明课程不存在
+		GetCourseResponse = _type.GetCourseResponse{
+			Code: _type.CourseNotExisted,
+		}
+	} else {
+		//课程存在
+		GetCourseResponse = _type.GetCourseResponse{
+			Code: _type.OK,
+			Data: *course,
+		}
 	}
+
 	c.JSON(http.StatusOK, GetCourseResponse)
 }
 
@@ -78,7 +85,7 @@ func CreateCourse(c *gin.Context) {
 		Code: _type.OK,
 	}
 	CreateCourseResponse.Data.CourseID = strconv.FormatInt(course.CourseId, 10)
-	//update redis
+	//update redis，不需要
 	c.JSON(http.StatusOK, CreateCourseResponse)
 }
 
