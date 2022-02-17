@@ -34,7 +34,7 @@ func LoginHandle(c *gin.Context) {
 				middle.SetUserId(c, userIdStr)
 				s, err := middle.GetSimpleSession(c)
 				_ = err
-				c.SetCookie("camp-session", s.SessionID, 999, "/", "localhost", false, true)
+				c.SetCookie("camp-session", s.SessionID, 999, "/", "", false, true)
 				fmt.Println(s.SessionID)
 				c.JSON(http.StatusOK, _type.LoginResponse{
 					Code: _type.OK,
@@ -54,7 +54,7 @@ func LogoutHandle(c *gin.Context) {
 			Code: _type.LoginRequired,
 		})
 	} else {
-		c.SetCookie("camp-session", "", -1, "/", "localhost", false, true)
+		c.SetCookie("camp-session", "", -1, "/", "", false, true)
 		c.JSON(http.StatusOK, _type.LoginResponse{
 			Code: _type.OK,
 			Data: struct{ UserID string }{UserID: id},
