@@ -153,7 +153,7 @@ func ListMember(c *gin.Context) {
 	db := DB.MysqlDB
 	// 查找数据库
 	var ListedMembers []_type.Member
-	result := db.Limit(Limit).Offset(*Offset).Find(&ListedMembers, "status = ?", _type.Existed) // 传入0值binding会报错，需要指针
+	result := db.Limit(Limit).Offset(*Offset).Find(&ListedMembers, "status = ?", _type.Existed) // 传入0值binding会报错.需要指针
 	// SELECT * FROM members OFFSET 5 LIMIT 10 WHERE status = 1;
 	// 处理结果
 	Rows := result.RowsAffected // 返回找到的记录数
