@@ -76,7 +76,7 @@ func HandleSimpleSession(name string) gin.HandlerFunc {
 			s = getSimpleSessionBySessionID(key)
 		}
 		c.Set("session", s)
-		c.Next()
+		//c.Next()
 	}
 }
 
