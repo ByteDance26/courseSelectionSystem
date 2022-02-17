@@ -96,7 +96,7 @@ type GetMemberResponse struct {
 // 批量获取成员信息
 
 type GetMemberListRequest struct {
-	Offset *int `binding:"required"` // 传入0值的时候binding会报错，需要用指针
+	Offset *int `binding:"required"` // 传入0值的时候binding会报错，需要指针
 	Limit  int  `binding:"required"`
 }
 
