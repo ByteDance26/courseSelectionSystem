@@ -13,7 +13,6 @@ func main() {
 	DB.InitMemRedis()
 	r := gin.Default()
 	middle.InitSimpleSessionPool() //中间件 SimpleSessionPool
-	r.Use(middle.HandleSimpleSession("camp-session"))
 	router.RegisterRouter(r)
 	r.Run(":80")
 }
