@@ -118,6 +118,8 @@ func GetUserId(c *gin.Context) (userId string, err _type.ErrNo) {
 /*
 set userId to session and log out previous session with same userId -> _type.OK
 */
+var mutex sync.Mutex
+
 func SetUserId(c *gin.Context, userId string) (err _type.ErrNo) {
 	var s *SimpleSession
 	_ = s
@@ -126,11 +128,13 @@ func SetUserId(c *gin.Context, userId string) (err _type.ErrNo) {
 	} else {
 		s = val.(*SimpleSession)
 	}
+	mutex.Lock()
 	if val, has := userIdMapSessionID[userId]; has {
 		getSimpleSessionBySessionID(val).Value["userId"] = nil
 	}
 	userIdMapSessionID[userId] = s.SessionID
 	s.Value["userId"] = userId
+	mutex.Unlock()
 	return _type.OK
 }
 
