@@ -252,7 +252,7 @@ func DeleteMember(c *gin.Context) {
 	} else {
 		Response.Code = _type.OK
 		//update Redis
-		DB.DeleteCourse(strconv.Itoa(UserID))
+		DB.DeleteStudent(strconv.Itoa(UserID))
 	}
 	c.JSON(http.StatusOK, Response)
 }
