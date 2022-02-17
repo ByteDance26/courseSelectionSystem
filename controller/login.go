@@ -4,6 +4,7 @@ import (
 	"courseSelectionSystem/middle"
 	"courseSelectionSystem/modules"
 	_type "courseSelectionSystem/type"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -34,6 +35,7 @@ func LoginHandle(c *gin.Context) {
 				s, err := middle.GetSimpleSession(c)
 				_ = err
 				c.SetCookie("camp-session", s.SessionID, 999, "/", "localhost", false, true)
+				fmt.Println(s.SessionID)
 				c.JSON(http.StatusOK, _type.LoginResponse{
 					Code: _type.OK,
 					Data: struct{ UserID string }{UserID: userIdStr},
@@ -63,6 +65,7 @@ func LogoutHandle(c *gin.Context) {
 func WhoamiHandle(c *gin.Context) {
 	//TODO 参数未检查
 	id, err := middle.GetUserId(c)
+	fmt.Println(id, err)
 	if err == _type.LoginRequired {
 		c.JSON(http.StatusOK, _type.WhoAmIResponse{
 			Code: _type.LoginRequired,
